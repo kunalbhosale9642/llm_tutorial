@@ -7,7 +7,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 # 1. Load the PDF
-# loader = PyPDFLoader(r"sample.pdf")
+loader = PyPDFLoader("sample.pdf")
 docs = loader.load()
 
 # 2. Split into chunks

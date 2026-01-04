@@ -10,7 +10,7 @@ ollama pull gemma3
 ollama pull nomic-embed-text
 
 #step 3    
-#Run LLM locally from terminal
+#Run LLM locally from terminal    
 ollama serve
 
 #step 4    
