@@ -1,5 +1,5 @@
 # llm_tutorial
-Using local LLM model creating a chatting tool
+VaultQuery: Private AI for Your PDFs
 
 #step 1    
 #install ollama go to link --> https://ollama.com/download
