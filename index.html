@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload - No Submit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-2 text-gray-800">PDF Assistant</h2>
+        <p class="text-gray-500 mb-6 text-sm">Upload a file and ask a question.</p>
+        
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Select PDF</label>
+                <input type="file" id="pdfFile" accept=".pdf" 
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-dashed border-gray-300 rounded-lg p-2">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Your Question</label>
+                <input type="text" id="userQuestion" placeholder="What is this document about?" 
+                    class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+            </div>
+
+            <button type="button" onclick="sendData()" id="actionBtn"
+                class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transform active:scale-95 transition-all">
+                Send to API
+            </button>
+        </div>
+
+        <div id="statusBox" class="mt-6 hidden p-4 rounded-lg text-sm text-center font-medium">
+        </div>
+    </div>
+
+    <script>
+        async function sendData() {
+            const fileInput = document.getElementById('pdfFile');
+            const questionInput = document.getElementById('userQuestion');
+            const statusBox = document.getElementById('statusBox');
+            const btn = document.getElementById('actionBtn');
+
+            // 1. Basic Validation
+            if (!fileInput.files[0] || !questionInput.value) {
+                showStatus("Please select a file and type a question!", "bg-red-100 text-red-700");
+                return;
+            }
+
+            // 2. Prepare Form Data
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('question', questionInput.value);
+
+            // 3. Update UI State
+            btn.disabled = true;
+            btn.innerText = "Sending...";
+            statusBox.classList.add('hidden');
+
+            try {
+                // 4. API Call
+                const response = await fetch('http://127.0.0.1:8000/upload-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showStatus(`Result:${result.answer}`, "bg-green-100 text-green-700");
+                    console.log("Server Response:", result);
+                } else {
+                    showStatus("❌ Error: " + (result.detail || "Upload failed"), "bg-red-100 text-red-700");
+                }
+            } catch (error) {
+                showStatus("❌ Connection Failed. Is the API running?", "bg-red-100 text-red-700");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Send to API";
+            }
+        }
+
+        function showStatus(msg, classes) {
+            const statusBox = document.getElementById('statusBox');
+            statusBox.className = `mt-6 p-4 rounded-lg text-sm text-center font-medium ${classes}`;
+            statusBox.innerText = msg;
+            statusBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

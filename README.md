@@ -19,5 +19,12 @@ ollama serve
 #step 5   
 pip install -r requirements.txt
 
+#step 6
+run command in terminal -> python .\pdf_api.py
+
+#step 7
+hit live server from vs code and then on browser type -> http://127.0.0.1:5500/
+
+
 
 
